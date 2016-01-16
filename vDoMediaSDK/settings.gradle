@@ -1,1 +1,1 @@
-include ':app', ':watch',':videodownloadersdk'
+include ':app', ':watch',':sdk'

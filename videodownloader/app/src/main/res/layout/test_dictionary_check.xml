@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@id/scrollviewconsole"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@id/console_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:scrollbars="vertical"
+            android:singleLine="false"
+            android:textSize="15sp" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@id/input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scrollviewconsole"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/console_field_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/console_field_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:singleLine="true"
+            android:text="" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:id="@id/scrollviewbuttons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/input_container"
+        android:fadeScrollbars="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/ch1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Check Dictionary" />
+
+            <Button
+                android:id="@+id/ch2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Check Function 2" />
+
+
+        </LinearLayout>
+    </ScrollView>
+    <!--   //wv_simple_process-->
+    <ProgressBar
+        android:id="@id/progress_client_display"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true" />
+</RelativeLayout>

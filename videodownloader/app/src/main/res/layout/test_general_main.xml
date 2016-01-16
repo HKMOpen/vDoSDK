@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <ScrollView
+        android:id="@id/scrollviewconsole"
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+
+        <TextView
+            android:id="@id/console_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:selectAllOnFocus="true"
+            android:singleLine="false"
+            android:textSize="15sp" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@id/input_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/scrollviewconsole"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/console_field_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:inputType="textUri"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/copy_current"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_bookmark" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:id="@id/scrollviewbuttons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/input_container"
+        android:fadeScrollbars="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/getv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Get Video" />
+
+            <Button
+                android:id="@+id/paste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--Paste--" />
+
+
+        </LinearLayout>
+    </ScrollView>
+    <!--   //wv_simple_process-->
+    <ProgressBar
+        android:id="@id/progress_client_display"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true" />
+</RelativeLayout>

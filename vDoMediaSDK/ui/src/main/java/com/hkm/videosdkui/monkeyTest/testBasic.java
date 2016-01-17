@@ -1,4 +1,4 @@
-package com.hkm.dltstclien.monkeyTest;
+package com.hkm.videosdkui.monkeyTest;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.hkm.dltstclien.R;
-import com.hkm.dltstclien.application.Dialog.ErrorMessage;
+import com.hkm.videosdkui.R;
+import com.hkm.videosdkui.application.Dialog.ErrorMessage;
+
 
 /**
  * Created by zJJ on 1/16/2016.

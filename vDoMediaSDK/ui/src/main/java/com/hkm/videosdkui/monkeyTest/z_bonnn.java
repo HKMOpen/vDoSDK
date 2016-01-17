@@ -1,4 +1,4 @@
-package com.hkm.dltstclien.monkeyTest;
+package com.hkm.videosdkui.monkeyTest;
 
 import android.app.Fragment;
 import android.support.annotation.LayoutRes;

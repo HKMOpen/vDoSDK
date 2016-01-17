@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 
 import com.greysonparrelli.permiso.Permiso;
-import com.hkm.dltstclien.application.Splash;
+import com.hkm.videosdkui.application.Splash;
 
 /**
  * Created by zJJ on 1/15/2016.

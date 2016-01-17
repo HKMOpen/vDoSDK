@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.hkm.dltstchlien"
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
@@ -17,20 +16,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    packagingOptions {
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
-    }
-
 }
-
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.greysonparrelli.permiso:permiso:0.1.1'
     compile project(':sdk')
-    compile project(':ui')
-    compile 'com.jakewharton:butterknife:5.1.1'
-
 }
+apply from: '../br.gradle'

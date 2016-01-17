@@ -1,4 +1,4 @@
-package com.hkm.dltstclien.application.Dialog;
+package com.hkm.videosdkui.application.Dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

@@ -4,7 +4,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hkm.dltstclien.monkeyTest.testBasic;
+import com.hkm.videosdkui.monkeyTest.testBasic;
+
 
 /**
  * Created by zJJ on 1/16/2016.

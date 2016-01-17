@@ -1,1 +1,1 @@
-include ':app', ':watch',':sdk'
+include ':app', ':watch', ':sdk', ':ui'

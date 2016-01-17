@@ -7,13 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
-import com.hkm.dltstclien.application.Dialog.ErrorMessage;
-import com.hkm.dltstclien.monkeyTest.testBasic;
 import com.hkm.vdlsdk.Util;
 import com.hkm.vdlsdk.client.FBdownNet;
 import com.hkm.vdlsdk.client.SoundCloud;
 import com.hkm.vdlsdk.model.urban.Term;
+import com.hkm.videosdkui.application.Dialog.ErrorMessage;
+import com.hkm.videosdkui.monkeyTest.testBasic;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;

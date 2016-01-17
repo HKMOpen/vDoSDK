@@ -1,4 +1,4 @@
-package com.hkm.dltstclien.application.Dialog;
+package com.hkm.videosdkui.application.Dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
 
-import com.hkm.dltstclien.R;
+import com.hkm.videosdkui.R;
 
 import java.util.Calendar;
 

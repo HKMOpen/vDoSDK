@@ -1,4 +1,4 @@
-package com.hkm.dltstclien.application;
+package com.hkm.videosdkui.application;
 
 import android.Manifest;
 import android.os.Build;

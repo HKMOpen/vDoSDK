@@ -16,6 +16,7 @@ import java.net.CookieHandler;
 import java.net.CookiePolicy;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -103,11 +104,12 @@ public class SoundCloud extends retrofitClientBasic {
             return;
         }
         isSingleTrack = sound_url_checker.getPathSegments().contains("sets") ? false : true;
-        task_destination = urlFromSoundCloud;
+        task_destination = urlFromSoundCloud.trim().replace(" ", "");
         taskGetToken h = new taskGetToken(cb);
         h.execute();
     }
 
+    private String failure_message = "error";
 
     private class taskGetToken extends AsyncTask<Void, Void, String> {
         final Callback cb;
@@ -141,11 +143,24 @@ public class SoundCloud extends retrofitClientBasic {
 
                 return token;
             } catch (IOException e) {
-                cb.failture("Operational error:" + e.getMessage());
+                failure_message = e.getMessage();
+                cancel(true);
             }
             return null;
         }
 
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
+            cb.failture("Operational error:" + failure_message);
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            cb.failture("Operational error:" + failure_message);
+        }
 
         @Override
         protected void onPostExecute(String s) {
@@ -159,8 +174,7 @@ public class SoundCloud extends retrofitClientBasic {
                 public void onResponse(Response<String> response, Retrofit retrofit) {
                     try {
                         if (!response.isSuccess()) {
-                            cb.failture("response not success: " + response.message());
-                            throw new Exception("response code:" + response.code());
+                            throw new Exception("response code:" + response.code() + "response not success: " + response.message());
                         }
                         LinkedHashMap<String, String> links = new LinkedHashMap<String, String>();
                         Document doc = Jsoup.parse(response.body());
@@ -175,7 +189,7 @@ public class SoundCloud extends retrofitClientBasic {
                         }
 
                         if (links.size() == 0) {
-                            cb.failture("empty result");
+                            throw new Exception("empty result");
                         } else {
                             cb.success(links);
                         }
@@ -186,7 +200,7 @@ public class SoundCloud extends retrofitClientBasic {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    cb.failture(t.getLocalizedMessage());
+                    cb.failture("mostly time out:" + t.getMessage());
                 }
             });
         }
@@ -206,6 +220,9 @@ public class SoundCloud extends retrofitClientBasic {
         java.net.CookieManager cookieManager = new java.net.CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
-        return super.createClient();
+        OkHttpClient client = super.createClient();
+        client.setConnectTimeout(120, TimeUnit.SECONDS); // connect timeout
+        client.setReadTimeout(60, TimeUnit.SECONDS);    // socket timeout
+        return client;
     }
 }

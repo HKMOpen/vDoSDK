@@ -31,7 +31,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.greysonparrelli.permiso:permiso:0.1.1'
-    compile project(':videodownloadersdk')
+    compile project(':sdk')
     compile 'com.jakewharton:butterknife:5.1.1'
 
 }

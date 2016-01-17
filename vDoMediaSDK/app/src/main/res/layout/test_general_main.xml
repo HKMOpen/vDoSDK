@@ -32,16 +32,16 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:focusableInTouchMode="false"
             android:inputType="textUri"
             android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/copy_current"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_bookmark" />
+            android:src="@drawable/ic_share_24dp" />
     </LinearLayout>
 
 
@@ -50,24 +50,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/input_container"
-        android:fadeScrollbars="true">
+        android:fadeScrollbars="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/getv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Get Video" />
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/paste"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--Paste--" />
+                android:layout_width="@dimen/item_touch_b"
+                android:layout_height="match_parent"
+                android:text="Paste URL" />
+
+            <Button
+                android:id="@+id/getsnd"
+                android:layout_width="@dimen/item_touch_b"
+                android:layout_height="match_parent"
+                android:text="Get SoundCloud mp3" />
+
+            <Button
+                android:id="@+id/getv"
+                android:layout_width="@dimen/item_touch_b"
+                android:layout_height="match_parent"
+                android:text="Get FB Video" />
 
 
         </LinearLayout>

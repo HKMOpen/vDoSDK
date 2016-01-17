@@ -38,13 +38,17 @@ public abstract class testBasic extends z_bonnn {
     }
 
 
-    protected void completeloading() {
+    protected void completeloadingRestart() {
         ViewCompat.animate(betterCircleBar).alpha(0f).withEndAction(new Runnable() {
             @Override
             public void run() {
                 run_bind_program_start();
             }
         });
+    }
+
+    protected void completeloading() {
+        ViewCompat.animate(betterCircleBar).alpha(0f);
     }
 
     protected void addMessage(final String mMessage) {

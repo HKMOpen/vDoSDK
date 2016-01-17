@@ -7,12 +7,12 @@ import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit.Call;
@@ -23,6 +23,7 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -31,6 +32,8 @@ import retrofit.http.Query;
 public class FBdownNet extends retrofitClientBasic {
     public interface fbdownCB {
         void success(String answer);
+
+        void loginfirst(String here);
 
         void failture(String why);
     }
@@ -50,6 +53,24 @@ public class FBdownNet extends retrofitClientBasic {
 
         @GET("/story.php")
         Call<String> getvideo(@Query("story_fbid") final String fburl, @Query("id") final String id);
+
+        @FormUrlEncoded
+        @POST("/{redirect}")
+        Call<String> login2Page(
+                @Path("redirect") final String redirect,
+                @Field("lsd") final String lsd,
+                @Field("charset_test") final String charset_test,
+                @Field("version") final String version,
+                @Field("ajax") final String ajax,
+                @Field("pxr") final String pxr,
+                @Field("gps") final String gps,
+                @Field("dimension") final String dimension,
+                @Field("m_ts") final String m_ts,
+                @Field("li") final String li,
+                @Field("pass") final String pass,
+                @Field("email") final String email
+        );
+
     }
 
 
@@ -82,55 +103,18 @@ public class FBdownNet extends retrofitClientBasic {
     private Call<String> mCall;
 
     private void mFacebookNetwork(Uri url, final fbdownCB cb) {
-/*
-        Retrofit newfacebookmnetwork = new Retrofit.Builder()
-                .baseUrl(url.toString())
-                .addConverterFactory(new ToStringConverter())
-                .client(createClient())
-                .build();
-
-        workerService work = newfacebookmnetwork.create(workerService.class);
-        mCall = work.getvideo(url.getQueryParameter("story_fbid"), url.getQueryParameter("id"));
-        mCall.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Response<String> response, Retrofit retrofit) {
-                if (response.isSuccess()) {
-                    if (response.code() == 200) {
-                        try {
-                            String xml = response.body();
-                            Document h = Jsoup.parse(xml);
-                            String f = h.select("#mInlineVideoPlayer").attr("src").toLowerCase();
-                            cb.success(f);
-                        } catch (Exception e) {
-                            cb.failture(e.getLocalizedMessage());
-                        }
-                    } else {
-                        cb.failture("server maybe down");
-                    }
-                } else {
-                    cb.failture("server maybe down");
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                cb.failture("operational faliure:" + t.getLocalizedMessage());
-            }
-        });
-*/
-
-        gethml gt = new gethml(cb);
+        pipline_g gt = new pipline_g(cb);
         gt.execute(new String[]{url.toString()});
     }
 
-    private class gethml extends AsyncTask<String, Void, Void> {
+    private class pipline_g extends AsyncTask<String, Void, Void> {
         final fbdownCB cb;
+        boolean need_to_login_first = false;
         String success = "";
 
-        public gethml(fbdownCB callback) {
+        public pipline_g(fbdownCB callback) {
             cb = callback;
         }
-
 
 
         @Override
@@ -145,21 +129,58 @@ public class FBdownNet extends retrofitClientBasic {
                 okhttp3.Response response = call.execute();
                 ResponseBody body = response.body();
 
+                if (!response.isSuccessful()) {
+                    throw new IOException("server maybe down");
+                }
+
+                if (response.code() != 200) {
+                    throw new IOException("server " + response.code());
+                }
+/*
                 final String solve = body.string();
                 final String getTagVideoPartial = "\\/video_redirect(.*?)(.*)(=F)";
 
                 Pattern pattern = Pattern.compile(getTagVideoPartial);
                 Matcher matcher = pattern.matcher(solve);
+                Log.i("hackResult", solve);
                 if (matcher.find()) {
-
                     Log.d("hackResult", matcher.group(0));
                     success = matcher.group(0);
+                }*/
+
+                success = get_page_video_real_url(body);
+
+
+                final String solve = body.string();
+                if (success.isEmpty()) {
+                    //find the login pattern
+                    final String find_login = "\\/login.php\\?next=(.*?)(=\\d{2})";
+                    Pattern patternc = Pattern.compile(find_login);
+                    Matcher fm = patternc.matcher(solve);
+                    if (fm.find()) {
+                        Log.d("hackResult", fm.group(0));
+                        success = fm.group(0);
+                        if (success.isEmpty()) {
+                            throw new IOException("cannot found the video");
+                        } else {
+                            need_to_login_first = true;
+                            String login = "https://m.facebook.com" + success;
+
+
+                            //As we need to wait for the Okhttp3 to be implemented on retrofit on the stable level we dont make a login use now.
+                            // fb_login(login);
+                            cancel(true);
+                        }
+                    } else
+                        throw new IOException("cannot found the video");
                 }
-
                 success = "https://m.facebook.com" + success;
-
             } catch (IOException e) {
-                cb.failture(e.getLocalizedMessage());
+                success = e.getMessage();
+                cancel(true);
+            } catch (Exception e) {
+                success = e.getMessage();
+                cancel(true);
             }
             return null;
         }
@@ -168,6 +189,78 @@ public class FBdownNet extends retrofitClientBasic {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             cb.success(success);
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+            if (need_to_login_first)
+                cb.loginfirst(success);
+            else
+                cb.failture(success);
+        }
+    }
+
+    private String get_page_video_real_url(ResponseBody body) throws Exception {
+        final String solve = body.string();
+        final String getTagVideoPartial = "\\/video_redirect(.*?)(.*)(=F)";
+
+        Pattern pattern = Pattern.compile(getTagVideoPartial);
+        Matcher matcher = pattern.matcher(solve);
+        Log.i("hackResult", solve);
+        if (matcher.find()) {
+            Log.d("hackResult", matcher.group(0));
+            return matcher.group(0);
+        }
+        return "";
+    }
+
+    private void fb_login(final String login) throws IOException, Exception {
+        okhttp3.Call callLogin = client3.newCall(new Request.Builder().url(login).build());
+        okhttp3.Response responseLogin = callLogin.execute();
+        if (!responseLogin.isSuccessful()) {
+            throw new IOException("server maybe down");
+        }
+        if (responseLogin.code() != 200) {
+            throw new IOException("server " + responseLogin.code());
+        }
+        ResponseBody bodyLogin = responseLogin.body();
+        final String solveLogin = bodyLogin.string();
+
+        Element el = Jsoup.parse(solveLogin).select("form.mobile-login-form").first();
+        String action = el.attr("action");
+        String lsd = el.select("input[type=hidden][name=lsd]").first().val();
+        String charset_test = el.select("input[type=hidden][name=charset_test]").first().val();
+        String version = el.select("input[type=hidden][name=version]").first().val();
+        String ajax = el.select("input[type=hidden][name=ajax]").first().val();
+        String width = el.select("input[type=hidden][name=width]").first().val();
+        String pxr = el.select("input[type=hidden][name=pxr]").first().val();
+        String gps = el.select("input[type=hidden][name=gps]").first().val();
+        String m_ts = el.select("input[type=hidden][name=m_ts]").first().val();
+        String li = el.select("input[type=hidden][name=li]").first().val();
+        String login_email = "ooxhesk@yahoo.com.hk";
+        String pass = "kam123";
+        workerService work = createService();
+
+        mCall = work.login2Page(action, lsd, charset_test, version, ajax, width, pxr, gps, m_ts, li, pass, login_email);
+        retrofit.Response<String> response = mCall.execute();
+
+        if (response.isSuccess()) {
+            if (response.code() == 200) {
+                try {
+
+                    //  String r = get_page_video_real_url(response.raw().body());
+
+
+                    // cb.success(sb.toString());
+                } catch (Exception e) {
+                    // cb.failture(e.getLocalizedMessage());
+                }
+            } else {
+                // cb.failture("server maybe down");
+            }
+        } else {
+            //cb.failture("server maybe down");
         }
     }
 

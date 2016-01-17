@@ -2,7 +2,8 @@
 The best SDK for media downloading
 ```gradle
 
-com.hkm.mediaSDK:mdsdk:0.1.0
-com.hkm.mediaSDK:mdui:0.1.0
+    compile  'com.hkm.mediaSDK:mdsdk:0.1.0'
+    compile  'com.hkm.mediaSDK:mdui:0.1.0'
+    
 
 ```

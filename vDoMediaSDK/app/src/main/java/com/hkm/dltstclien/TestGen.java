@@ -58,7 +58,8 @@ public class TestGen extends testBasic {
 
         final String t1 = "https://soundcloud.com/adealin/one-piece-epic-battle-theme";
         final String t2 = "https://soundcloud.com/heskemo/sets/songngn";
-        field1.setText(t2);
+        final String t3 = "https://m.facebook.com/story.php?story_fbid=1251786081505337&id=100000218707928";
+        field1.setText(t3);
     }
 
     private void setClip(String info) {
@@ -100,7 +101,7 @@ public class TestGen extends testBasic {
                                 addMessage(answer);
                                 setClip(answer);
                                 enableall();
-                                Util.EasyVideoMessageShare(getActivity(), null, answer);
+                             //   Util.EasyVideoMessageShare(getActivity(), null, answer);
                                 fb_video_result = answer;
                                 soundcloud_result = null;
                             }
@@ -142,7 +143,7 @@ public class TestGen extends testBasic {
                         enableall();
                         fb_video_result = null;
                         soundcloud_result = result;
-                        Util.EasySoundCloudListShare(getActivity(), result);
+                      //  Util.EasySoundCloudListShare(getActivity(), result);
                     }
 
                     @Override

@@ -176,7 +176,7 @@ public class FBdownNet extends retrofitClientBasic {
                 }
                 success = "https://m.facebook.com" + success;
             } catch (IOException e) {
-                success = e.getMessage();
+                success = e.getCause().getMessage();
                 cancel(true);
             } catch (Exception e) {
                 success = e.getMessage();

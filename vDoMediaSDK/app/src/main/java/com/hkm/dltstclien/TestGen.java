@@ -7,9 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
 import com.hkm.vdlsdk.Util;
 import com.hkm.vdlsdk.client.FBdownNet;
 import com.hkm.vdlsdk.client.SoundCloud;
+import com.hkm.vdlsdk.client.ValidationChecker;
+import com.hkm.vdlsdk.client.YouTube;
 import com.hkm.vdlsdk.model.urban.Term;
 import com.hkm.videosdkui.application.Dialog.ErrorMessage;
 import com.hkm.videosdkui.monkeyTest.testBasic;
@@ -23,8 +26,8 @@ import retrofit.Call;
  * Created by zJJ on 1/16/2016.
  */
 public class TestGen extends testBasic {
-    EditText field1, field2;
-    Button b1, b2, b3;
+    EditText consolefield, field2;
+    Button b1, b2, b3, checklink, b_yotube;
     ImageButton copy_current;
 
     private LinkedHashMap<String, String> soundcloud_result;
@@ -52,14 +55,16 @@ public class TestGen extends testBasic {
         b3 = (Button) v.findViewById(R.id.getv);
         b2 = (Button) v.findViewById(R.id.paste);
         b1 = (Button) v.findViewById(R.id.getsnd);
-        field1 = (EditText) v.findViewById(R.id.console_field_1);
+        b_yotube = (Button) v.findViewById(R.id.getyt);
+        checklink = (Button) v.findViewById(R.id.checklink);
+        consolefield = (EditText) v.findViewById(R.id.console_field_1);
         //  field2 = (EditText) v.findViewById(R.id.console_field_2);
         copy_current = (ImageButton) v.findViewById(R.id.copy_current);
 
         final String t1 = "https://soundcloud.com/adealin/one-piece-epic-battle-theme";
         final String t2 = "https://soundcloud.com/heskemo/sets/songngn";
         final String t3 = "https://m.facebook.com/story.php?story_fbid=1251786081505337&id=100000218707928";
-        field1.setText(t3);
+        consolefield.setText(t3);
     }
 
     private void setClip(String info) {
@@ -81,11 +86,63 @@ public class TestGen extends testBasic {
                 setClip(console.getText().toString());
             }
         });*/
+
+        b_yotube.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                YouTube.getInstance(
+                        getActivity()).parseUrl(
+                        consolefield.getText().toString(),
+                        new YouTube.Callback() {
+                            @Override
+                            public void success(String delivered_product, String title) {
+                                addMessage("====success====");
+                                addMessage(delivered_product);
+                                setClip(delivered_product);
+                                enableall();
+                                //   Util.EasyVideoMessageShare(getActivity(), null, answer);
+                                fb_video_result = delivered_product;
+                                soundcloud_result = null;
+                            }
+
+                            @Override
+                            public void failture(String failure) {
+                                addMessage("====Failure====");
+                                addMessage("Cannot locate this link");
+                                addMessage(failure);
+                            }
+                        }
+                );
+            }
+        });
+
+        checklink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ValidationChecker.general_validation_check(
+                        consolefield.getText().toString(),
+                        new ValidationChecker.check_cb() {
+                            @Override
+                            public void success(String delivered_product) {
+                                addMessage("====Validation Success====");
+                                addMessage("This link is still valid");
+                            }
+
+                            @Override
+                            public void failture(String failure) {
+                                addMessage("====End Failure====");
+                                addMessage("Cannot locate this link");
+                                addMessage(failure);
+                            }
+                        }
+                );
+            }
+        });
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-                field1.setText(item.getText());
+                consolefield.setText(item.getText());
             }
         });
         b3.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +150,7 @@ public class TestGen extends testBasic {
             public void onClick(View v) {
                 progress();
                 fbclient.getVideoUrl(
-                        field1.getText().toString(),
+                        consolefield.getText().toString(),
                         new FBdownNet.fbdownCB() {
                             @Override
                             public void success(String answer) {
@@ -101,7 +158,7 @@ public class TestGen extends testBasic {
                                 addMessage(answer);
                                 setClip(answer);
                                 enableall();
-                             //   Util.EasyVideoMessageShare(getActivity(), null, answer);
+                                //   Util.EasyVideoMessageShare(getActivity(), null, answer);
                                 fb_video_result = answer;
                                 soundcloud_result = null;
                             }
@@ -126,10 +183,10 @@ public class TestGen extends testBasic {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (field1.getText().toString().isEmpty())
+                if (consolefield.getText().toString().isEmpty())
                     return;
                 progress();
-                sndClient.pullFromUrl(field1.getText().toString(), new SoundCloud.Callback() {
+                sndClient.pullFromUrl(consolefield.getText().toString(), new SoundCloud.Callback() {
                     @Override
                     public void success(LinkedHashMap<String, String> result) {
                         addMessage("====success====");
@@ -143,7 +200,7 @@ public class TestGen extends testBasic {
                         enableall();
                         fb_video_result = null;
                         soundcloud_result = result;
-                      //  Util.EasySoundCloudListShare(getActivity(), result);
+                        //  Util.EasySoundCloudListShare(getActivity(), result);
                     }
 
                     @Override

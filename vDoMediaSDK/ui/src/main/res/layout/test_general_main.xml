@@ -7,7 +7,8 @@
     <ScrollView
         android:id="@id/scrollviewconsole"
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="400dp"
+        android:layout_below="@id/input_container">
 
         <TextView
             android:id="@id/console_display"
@@ -16,24 +17,24 @@
             android:scrollbars="vertical"
             android:selectAllOnFocus="true"
             android:singleLine="false"
-            android:textSize="15sp" />
+            android:textSize="16sp" />
     </ScrollView>
 
     <LinearLayout
         android:id="@id/input_container"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_below="@id/scrollviewconsole"
+        android:layout_alignParentTop="true"
+
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/console_field_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_margin="2dp"
             android:layout_weight="1"
-            android:focusableInTouchMode="false"
-            android:inputType="textUri"
+            android:inputType="textNoSuggestions"
             android:singleLine="true" />
 
         <ImageButton
@@ -45,13 +46,15 @@
     </LinearLayout>
 
 
-    <ScrollView
+    <HorizontalScrollView
         android:id="@id/scrollviewbuttons"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@id/input_container"
+        android:layout_below="@id/scrollviewconsole"
         android:fadeScrollbars="true"
-        android:scrollbarAlwaysDrawHorizontalTrack="true">
+        android:fillViewport="true"
+        android:measureAllChildren="false"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -63,6 +66,12 @@
                 android:layout_width="@dimen/item_touch_b"
                 android:layout_height="match_parent"
                 android:text="Paste URL" />
+
+            <Button
+                android:id="@+id/checklink"
+                android:layout_width="@dimen/item_touch_b"
+                android:layout_height="match_parent"
+                android:text="Link Check" />
 
             <Button
                 android:id="@+id/getsnd"
@@ -77,8 +86,14 @@
                 android:text="Get FB Video" />
 
 
+            <Button
+                android:id="@+id/getyt"
+                android:layout_width="@dimen/item_touch_b"
+                android:layout_height="match_parent"
+                android:text="Get Youtube Video" />
+
         </LinearLayout>
-    </ScrollView>
+    </HorizontalScrollView>
     <!--   //wv_simple_process-->
     <ProgressBar
         android:id="@id/progress_client_display"

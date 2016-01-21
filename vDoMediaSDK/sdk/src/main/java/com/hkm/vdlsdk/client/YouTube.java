@@ -39,7 +39,17 @@ public class YouTube extends retrofitClientBasic {
     private Call<String> mCall;
     private String task_destination, csrftoken = "";
     private boolean isSingleTrack = true;
-    private static final String ytIdParser="(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=[0-9]/)[^&\\n]+|(?<=v=)[^&\\n]+";
+
+    /* http://www.youtube.com/v/0zM3nApSvMg?fs=1&amp;hl=en_US&amp;rel=0
+     http://www.youtube.com/embed/0zM3nApSvMg?rel=0
+     http://www.youtube.com/watch?v=0zM3nApSvMg&feature=feedrec_grec_index
+     http://www.youtube.com/watch?v=0zM3nApSvMg
+     http://youtu.be/0zM3nApSvMg
+     http://www.youtube.com/watch?v=0zM3nApSvMg#t=0m10s
+     http://www.youtube.com/user/IngridMichaelsonVEVO#p/a/u/1/QdK8U-VIH_o*/
+    private static final String ytIdParser = "(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=[0-9]/)[^&\\n]+|(?<=v=)[^&\\n]+";
+    private static final String parseV2 = "(?:videos\\\\/|v=)([\\\\w-]+)";
+
     public interface Callback {
         void success(String resource_link, String title);
 
@@ -84,18 +94,18 @@ public class YouTube extends retrofitClientBasic {
 
     public void parseUrl(final String content_url, final Callback cb) {
 
-        Pattern pattern = Pattern.compile(ytIdParser);
+        Pattern pattern = Pattern.compile(parseV2);
         Matcher matcher = pattern.matcher(content_url);
         Log.i("hackResult", content_url);
         String clip_id = "";
         if (matcher.find()) {
             Log.d("hackResult", matcher.group(0));
-            clip_id =  matcher.group(0);
-            if(clip_id.isEmpty()){
+            clip_id = matcher.group(0);
+            if (clip_id.isEmpty()) {
                 cb.failture("youtube Id is not found.");
                 return;
             }
-        }  else{
+        } else {
             cb.failture("youtube Id is not found.");
             return;
         }

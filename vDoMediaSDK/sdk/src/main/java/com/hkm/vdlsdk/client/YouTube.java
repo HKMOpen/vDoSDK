@@ -31,6 +31,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Query;
 
 /**
  * Created by hesk on 21/1/16.
@@ -47,8 +48,7 @@ public class YouTube extends retrofitClientBasic {
      http://youtu.be/0zM3nApSvMg
      http://www.youtube.com/watch?v=0zM3nApSvMg#t=0m10s
      http://www.youtube.com/user/IngridMichaelsonVEVO#p/a/u/1/QdK8U-VIH_o*/
-    private static final String ytIdParser = "(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=[0-9]/)[^&\\n]+|(?<=v=)[^&\\n]+";
-    private static final String parseV2 = "(?:videos\\\\/|v=)([\\\\w-]+)";
+
 
     public interface Callback {
         void success(String resource_link, String title);
@@ -58,12 +58,12 @@ public class YouTube extends retrofitClientBasic {
 
     @Override
     protected String getBaseEndpoint() {
-        return "http://mp4.ee/watch";
+        return "http://mp4.ee";
     }
 
     private interface workerService {
-        @GET("/")
-        Call<String> getMp4DownloadList(@Field("v") final String youtube_id);
+        @GET("/watch")
+        Call<String> getMp4DownloadList(@Query("v") final String youtube_id);
     }
 
     private static YouTube static_instance;
@@ -93,25 +93,32 @@ public class YouTube extends retrofitClientBasic {
 
 
     public void parseUrl(final String content_url, final Callback cb) {
-
-        Pattern pattern = Pattern.compile(parseV2);
+        final String PARSE_V3 = "(?:(?:https?:\\/\\/)?(?:youtu[.]be\\/)|(?:.*(?:embed|[/?&]v)i?(?:\\/|=)))([a-zA-z0-9-]*?)(?:$|[&?/].*$)";
+        Pattern pattern = Pattern.compile(PARSE_V3);
         Matcher matcher = pattern.matcher(content_url);
-        Log.i("hackResult", content_url);
-        String clip_id = "";
+        // Log.i("hackResult", content_url);
         if (matcher.find()) {
-            Log.d("hackResult", matcher.group(0));
-            clip_id = matcher.group(0);
-            if (clip_id.isEmpty()) {
+            Log.d("hackResult", matcher.group(1));
+            String clipId = matcher.group(1);
+            if (clipId.isEmpty()) {
                 cb.failture("youtube Id is not found.");
                 return;
             }
+            fromMP4dee(clipId, cb);
+           /* if (matcher.groupCount() > 0) {
+                for (int i = 0; i < matcher.groupCount(); i++) {
+                    String clipId = matcher.group(i);
+                    Log.d("hackResult", clipId);
+                }
+            }*/
         } else {
             cb.failture("youtube Id is not found.");
-            return;
         }
+    }
 
+    private void fromMP4dee(String cid, final Callback cb) {
         workerService work = createService();
-        mCall = work.getMp4DownloadList(clip_id);
+        mCall = work.getMp4DownloadList(cid);
         mCall.enqueue(new retrofit.Callback<String>() {
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
@@ -119,9 +126,16 @@ public class YouTube extends retrofitClientBasic {
                     if (response.code() == 200) {
                         try {
                             String xml = response.body();
+                            //    Log.i("htmlokhttp", xml);
                             Document h = Jsoup.parse(xml);
-                            String endpath = h.select("a.list-group-item#MP4").attr("href").toLowerCase();
-                            cb.success(endpath, "");
+                            String endpath = h.select("a#MP4").first().attr("href").toLowerCase();
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(endpath);
+                            sb.append("&asv=2");
+                            Log.i("html_okhttp", sb.toString());
+
+                            cb.success(sb.toString(), h.select("title").first().text());
                         } catch (Exception e) {
                             cb.failture(e.getLocalizedMessage());
                         }
@@ -145,9 +159,11 @@ public class YouTube extends retrofitClientBasic {
 
     @Override
     protected com.squareup.okhttp.Request.Builder universal_header(com.squareup.okhttp.Request.Builder chain) {
-        chain.addHeader("Cookie", "csrftoken=" + csrftoken);
-        chain.addHeader("Accept", "charset=UTF-8");
+        //    chain.addHeader("Cookie", "csrftoken=" + csrftoken);
+        chain.addHeader("Accept", "*/*");
+        chain.addHeader("Accept-Language", "zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4,zh-CN;q=0.2");
         chain.addHeader("Content-Type", "text/html; charset=utf-8");
+        chain.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");
         return super.universal_header(chain);
     }
 

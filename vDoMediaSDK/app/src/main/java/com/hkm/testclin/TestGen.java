@@ -1,4 +1,4 @@
-package com.hkm.dltstclien;
+package com.hkm.testclin;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,14 +13,11 @@ import com.hkm.vdlsdk.client.FBdownNet;
 import com.hkm.vdlsdk.client.SoundCloud;
 import com.hkm.vdlsdk.client.ValidationChecker;
 import com.hkm.vdlsdk.client.YouTube;
-import com.hkm.vdlsdk.model.urban.Term;
 import com.hkm.videosdkui.application.Dialog.ErrorMessage;
 import com.hkm.videosdkui.monkeyTest.testBasic;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-
-import retrofit.Call;
 
 /**
  * Created by zJJ on 1/16/2016.
@@ -33,14 +30,12 @@ public class TestGen extends testBasic {
     private LinkedHashMap<String, String> soundcloud_result;
     private String fb_video_result;
 
-    private Call<Term> recheck;
+
     ClipboardManager clipboard;
 
     @Override
     public void onDestroy() {
-        if (recheck != null) {
-            recheck.cancel();
-        }
+
         super.onDestroy();
     }
 
@@ -61,10 +56,12 @@ public class TestGen extends testBasic {
         //  field2 = (EditText) v.findViewById(R.id.console_field_2);
         copy_current = (ImageButton) v.findViewById(R.id.copy_current);
 
-        final String t1 = "https://soundcloud.com/adealin/one-piece-epic-battle-theme";
-        final String t2 = "https://soundcloud.com/heskemo/sets/songngn";
-        final String t3 = "https://m.facebook.com/story.php?story_fbid=1251786081505337&id=100000218707928";
-        consolefield.setText(t3);
+        final String target1 = "https://soundcloud.com/adealin/one-piece-epic-battle-theme";
+        final String target2 = "https://soundcloud.com/heskemo/sets/songngn";
+        final String target3 = "https://m.facebook.com/story.php?story_fbid=1251786081505337&id=100000218707928";
+        final String target4 = "https://www.youtube.com/watch?v=evHke9PZjCQ";
+        final String target5 = "https://youtu.be/evHke9PZjCQ";
+        consolefield.setText(target5);
     }
 
     private void setClip(String info) {
@@ -90,6 +87,12 @@ public class TestGen extends testBasic {
         b_yotube.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!YouTube.tester(consolefield.getText().toString())) {
+                    addMessage("====Failure====");
+                    addMessage("this is not a youtube link");
+                    return;
+                }
                 YouTube.getInstance(
                         getActivity()).parseUrl(
                         consolefield.getText().toString(),

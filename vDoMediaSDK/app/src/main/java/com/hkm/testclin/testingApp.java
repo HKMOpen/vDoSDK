@@ -1,4 +1,4 @@
-package com.hkm.dltstclien;
+package com.hkm.testclin;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

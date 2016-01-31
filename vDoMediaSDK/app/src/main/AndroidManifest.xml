@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hkm.dltstclien">
+    package="com.hkm.testclin">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Used to load images from the gallery content provider. -->
@@ -20,9 +20,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.hkm.dltstclien.testingApp" />
+        <activity android:name="com.hkm.testclin.testingApp" />
         <activity
-            android:name="com.hkm.dltstclien.SplashScn"
+            android:name="com.hkm.testclin.SplashScn"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>

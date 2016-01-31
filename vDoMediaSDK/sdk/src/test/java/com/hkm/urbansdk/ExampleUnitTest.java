@@ -1,4 +1,4 @@
-package com.hkm.dltstclien;
+package com.hkm.testclin;
 
 import org.junit.Test;
 

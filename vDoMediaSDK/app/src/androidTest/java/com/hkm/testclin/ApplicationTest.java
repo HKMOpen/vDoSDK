@@ -1,4 +1,4 @@
-package com.hkm.dltstclien;
+package com.hkm.testclin;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

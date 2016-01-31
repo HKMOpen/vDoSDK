@@ -1,36 +1,22 @@
 package com.hkm.vdlsdk.client;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookiePolicy;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Request;
-import okhttp3.ResponseBody;
 import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
 import retrofit.Retrofit;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
@@ -87,19 +73,37 @@ public class YouTube extends retrofitClientBasic {
         }
     }
 
+    private static final String PARSE_V1_FOUND_COMPLETE_LINK = "(?:https?:\\/\\/)?(?:www\\.)?youtu(?:.be\\/|be\\.com\\/watch\\?v=|be\\.com\\/v\\/)(.{8,})";
+    private static final String PARSE_V3 = "(?:(?:https?:\\/\\/)?(?:youtu[.]be\\/)|(?:.*(?:embed|[/?&]v)i?(?:\\/|=)))([a-zA-z0-9-]*?)(?:$|[&?/].*$)";
+
     private workerService createService() {
         return api.create(workerService.class);
     }
 
+    public static boolean tester(String content_url) {
+        Pattern pattern1 = Pattern.compile(PARSE_V1_FOUND_COMPLETE_LINK);
+        Matcher matcher1 = pattern1.matcher(content_url);
+        if (matcher1.find()) {
+            Log.d("hackResult", matcher1.group(1));
+            String link_found = matcher1.group(1);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    /**
+     * parse it
+     * @param content_url the context text
+     * @param cb the callback
+     */
     public void parseUrl(final String content_url, final Callback cb) {
-        final String PARSE_V3 = "(?:(?:https?:\\/\\/)?(?:youtu[.]be\\/)|(?:.*(?:embed|[/?&]v)i?(?:\\/|=)))([a-zA-z0-9-]*?)(?:$|[&?/].*$)";
-        Pattern pattern = Pattern.compile(PARSE_V3);
-        Matcher matcher = pattern.matcher(content_url);
+        Pattern pattern2 = Pattern.compile(PARSE_V3);
+        Matcher matcher2 = pattern2.matcher(content_url);
         // Log.i("hackResult", content_url);
-        if (matcher.find()) {
-            Log.d("hackResult", matcher.group(1));
-            String clipId = matcher.group(1);
+        if (matcher2.find()) {
+            Log.d("hackResult", matcher2.group(1));
+            String clipId = matcher2.group(1);
             if (clipId.isEmpty()) {
                 cb.failture("youtube Id is not found.");
                 return;
@@ -114,6 +118,8 @@ public class YouTube extends retrofitClientBasic {
         } else {
             cb.failture("youtube Id is not found.");
         }
+
+
     }
 
     private void fromMP4dee(String cid, final Callback cb) {

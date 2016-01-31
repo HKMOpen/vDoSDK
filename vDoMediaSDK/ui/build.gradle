@@ -26,4 +26,5 @@ dependencies {
     compile 'com.greysonparrelli.permiso:permiso:0.1.1'
     compile project(':sdk')
 }
-apply from: '../br.gradle'
+
+//apply from: '../br.gradle'
